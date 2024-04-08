@@ -42,10 +42,10 @@ class Data:
 
 class DataTime:
 
-    def __init__(self, data, month_start, month_end, year):
+    def __init__(self, data, month_start, month_end, year_start, year_end):
         # Accepts
 
-        id_year = (data.year == year)
+        id_year = (data.year >= year_start) & (data.year <= year_end)
         id_month = (data.month >= month_start) & (data.month <= month_end)
         idx = id_month & id_year
 
