@@ -20,9 +20,9 @@ class FilesCM:
 
         if region == "AP":
             self.min_lon = -73
-            self.max_lon = -60
+            self.max_lon = -45
             self.min_lat = -73
-            self.max_lat = -44
+            self.max_lat = -50
 
         if not os.path.exists(self.cmems_data):
             self.download_set()
@@ -55,10 +55,11 @@ class FilesCM:
 class DataCM:
 
     def __init__(self, files):
-        nc_file = nc.Dataset(files.cmems_data)
-        self.time = num2date(nc_file["time"], nc_file["time"].units)
-        self.depth = nc_file["depth"]
-        self.lat = nc_file["latitude"]
-        self.lon = nc_file["longitude"]
-        self.chl = nc_file["chl"]
+        self.nc_file = nc.Dataset(files.cmems_data)
+        self.time = num2date(self.nc_file["time"], self.nc_file["time"].units)
+        self.depth = self.nc_file["depth"]
+        self.lat = self.nc_file["latitude"]
+        self.lon = self.nc_file["longitude"]
+        self.chl = self.nc_file["chl"]
+        self.no3 = self.nc_file["no3"]
         return

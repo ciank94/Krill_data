@@ -4,13 +4,13 @@ import os
 from datetime import datetime
 
 
-class Files:
+class FilesKB:
     def __init__(self, kbase_path):
         self.kbase_data = kbase_path + 'krillbase.csv'
         self.dates = kbase_path + 'dates.npy'
 
 
-class Data:
+class DataKB:
 
     def __init__(self, files):
         self.table = pd.read_table(files.kbase_data, sep=',')
@@ -40,7 +40,7 @@ class Data:
         return
 
 
-class DataTime:
+class DateTimeKB:
 
     def __init__(self, data, month_start, month_end, year_start, year_end):
         # Accepts
