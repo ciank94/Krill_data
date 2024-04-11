@@ -5,12 +5,13 @@ class Data:
         self.kb = data_kb
         self.lat_id = None
         self.lon_id = None
+        self.X = None
+        self.y = None
         self.nearest_id()
         self.get_dataset()
         # data = Data(data_cm, data_kb)
         # lat = -60
         # lon = -60
-
 
     def get_dataset(self):
         months = self.kb.month.astype(int) - 1
@@ -22,7 +23,9 @@ class Data:
         chl_vals = chl[months, depth, lat_id, lon_id]
         no3_vals = no3[months, depth, lat_id, lon_id]
         krill_p = self.transform_krill_density()
-        breakpoint()
+        self.X = np.array([chl_vals, no3_vals]).T
+        self.y = np.array([krill_p]).T
+        return
 
     def transform_krill_density(self):
         n_obs = np.shape(self.kb.density)[0]
@@ -30,7 +33,7 @@ class Data:
         krill_p[:] = self.kb.density[:]
         krill_p[krill_p > 0.1] = 1
         krill_p[krill_p <= 0.1] = 0
-        return krill_p
+        return krill_p.astype(int)
 
     def nearest_id(self):
         n_obs = np.shape(self.kb.lat)[0]

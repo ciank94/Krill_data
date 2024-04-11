@@ -47,7 +47,8 @@ class DateTimeKB:
 
         id_year = (data.year >= year_start) & (data.year <= year_end)
         id_month = (data.month >= month_start) & (data.month <= month_end)
-        idx = id_month & id_year
+        id_invalid = ~np.isnan(data.density)
+        idx = id_month & id_year & id_invalid
 
         self.density = data.density[idx]
         self.lat = data.lat[idx]
