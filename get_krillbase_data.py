@@ -12,12 +12,12 @@ class FilesKB:
 
 class DataKB:
 
-    def __init__(self, files):
+    def __init__(self, files, year_start, year_end):
         self.table = pd.read_table(files.kbase_data, sep=',')
-        self.density = np.array(self.table.iloc[0:-1, 12])
-        self.lat = np.array(self.table.iloc[0:-1, 2])
-        self.lon = np.array(self.table.iloc[0:-1, 3])
-        self.day_night = np.array(self.table.iloc[0:-1, 5])
+        density = np.array(self.table.iloc[0:-1, 12])
+        lat = np.array(self.table.iloc[0:-1, 2])
+        lon = np.array(self.table.iloc[0:-1, 3])
+        day_night = np.array(self.table.iloc[0:-1, 5])
 
         if not os.path.exists(files.dates):
             self.date = self.table.iloc[0:-1, 4]
@@ -25,9 +25,23 @@ class DataKB:
             print('Saving times to npy file: ' + files.dates)
 
         date_file = np.load(files.dates)
-        self.day = date_file[:, 0]
-        self.month = date_file[:, 1]
-        self.year = date_file[:, 2]
+        day = date_file[:, 0]
+        month = date_file[:, 1]
+        year = date_file[:, 2]
+
+        # Index data for years and valid data
+        id_year = (year >= year_start) & (year <= year_end)
+        id_invalid = ~np.isnan(density)
+        idx = id_year & id_invalid
+
+        self.day = day[idx]
+        self.month = month[idx]
+        self.year = year[idx]
+        self.density = density[idx]
+        self.lat = lat[idx]
+        self.lon = lon[idx]
+        self.day_night = day_night[idx]
+        return
 
     def save_times(self, files):
         date_mat = np.zeros([np.shape(self.date)[0], 3])
@@ -37,26 +51,6 @@ class DataKB:
             date_mat[i, 1] = t_i.month
             date_mat[i, 2] = t_i.year
         np.save(files.dates, date_mat)
-        return
-
-
-class DateTimeKB:
-
-    def __init__(self, data, month_start, month_end, year_start, year_end):
-        # Accepts
-
-        id_year = (data.year >= year_start) & (data.year <= year_end)
-        id_month = (data.month >= month_start) & (data.month <= month_end)
-        id_invalid = ~np.isnan(data.density)
-        idx = id_month & id_year & id_invalid
-
-        self.density = data.density[idx]
-        self.lat = data.lat[idx]
-        self.lon = data.lon[idx]
-        self.day_night = data.day_night[idx]
-        self.day = data.day[idx]
-        self.month = data.month[idx]
-        self.year = data.year[idx]
         return
 
 

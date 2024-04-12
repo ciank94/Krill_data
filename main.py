@@ -1,31 +1,26 @@
-from get_krillbase_data import DateTimeKB, FilesKB, DataKB
-from get_cmems_data import FilesCM, DataCM
-from pre_process import Data
+from fuse_data import fuse_data
 import sklearn
+
+# paths
 kbase_path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/'
 cmems_path = kbase_path + 'CMEMS/'
 
-var = ["chl", "no3"]
-data_id = "cmems_mod_glo_bgc_my_0.25_P1M-m"  # monthly
-region = "AP"
-yr = "1993"
-start_date = yr + "-01-01T00:00:00"
-end_date = yr + "-12-31T23:59:59"
-files_cm = FilesCM(cmems_path, var, data_id, yr, region, start_date, end_date)
+# Specify cmems data id and range
+data_id = "cmems_mod_glo_bgc_my_0.25_P1M-m"  # monthly data
+y1 = "1993"  # Start year
+y2 = "2016"  # End year
 
-# Krill_base files
-files_kb = FilesKB(kbase_path)
+data = fuse_data(cmems_path, kbase_path, data_id, y1, y2)
+breakpoint()
 
-data_cm = DataCM(files_cm)
-data_a = DataKB(files_kb)
-data_kb = DateTimeKB(data_a, month_start=1, month_end=12, year_start=1993, year_end=1993)
 
 # import matplotlib.pyplot as plt
 
 import numpy as np
-fuse = Data(data_cm, data_kb)
-X = fuse.X
-y = fuse.y
+
+breakpoint()
+x = data.x
+y = data.y
 
 
 from sklearn.tree import DecisionTreeClassifier
@@ -33,7 +28,7 @@ from sklearn.tree import export_graphviz
 
 from sklearn.datasets import load_iris
 tree_clf = DecisionTreeClassifier(max_depth=10)
-tree_clf.fit(X,y)
+tree_clf.fit(x, y)
 # chl = data_cm.chl[1, 0, :, :]
 #
 #
