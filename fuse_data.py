@@ -3,6 +3,7 @@ def fuse_data(cmems_path, kbase_path, data_id, y1, y2):
     from get_krillbase_data import FilesKB, DataKB
     from get_cmems_data import FilesCM, DataCM
     from pre_process import Fuse
+
     # CMEMS files
     files_cm = FilesCM(cmems_path, data_id, y1, y2)
 

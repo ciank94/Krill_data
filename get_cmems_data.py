@@ -9,18 +9,18 @@ from pprint import pprint
 class FilesCM:
 
     def __init__(self, cmems_path, data_id, y1, y2):
+        self.min_depth = 0
+        self.max_depth = 1
+        self.min_lon = -73
+        self.max_lon = -31
+        self.min_lat = -73
+        self.max_lat = -50
         self.data_id = data_id
         self.cmems_path = cmems_path
+        self.start_date = y1 + "-01-01T00:00:00"
+        self.end_date = y2 + "-12-31T23:59:59"
 
         if data_id == "cmems_mod_glo_bgc_my_0.25_P1M-m":
-            self.min_lon = -73
-            self.max_lon = -31
-            self.min_lat = -73
-            self.max_lat = -50
-            self.min_depth = 0
-            self.max_depth = 1
-            self.start_date = y1 + "-01-01T00:00:00"
-            self.end_date = y2 + "-12-31T23:59:59"
             self.var = ["chl", "no3", "nppv", "o2", "po4", "si"]
             self.cmems_data = (self.cmems_path + 'CMEMS_BGC_hindcast_' + self.start_date[:4] +
                                '_' + self.end_date[:4] + '.nc')
@@ -90,3 +90,4 @@ class DataCM:
         except:
             pass
         return
+
