@@ -1,4 +1,5 @@
 from fuse_data import fuse_data
+from ml_methods import ML
 import sklearn
 
 # paths
@@ -11,6 +12,27 @@ y1 = "1993"  # Start year
 y2 = "2016"  # End year
 
 data = fuse_data(cmems_path, kbase_path, data_id, y1, y2)
+
+
+ml = ML(data)
+ml.feature_scaling()
+ml.split_train_test(0.2)
+
+from sklearn.linear_model import SGDClassifier
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
+import numpy as np
+sgd_clf = SGDClassifier(random_state=37)
+sgd_clf.fit(ml.train_x, ml.train_y)
+y_pred = sgd_clf.predict(ml.test_x)
+y_train_pred = sgd_clf.predict(ml.train_x)
+n_correct = sum(y_pred == ml.test_y)
+confusion_matrix(ml.test_y, y_pred)
+confusion_matrix(ml.train_y, y_train_pred)
+print(n_correct/len(y_pred))
+breakpoint()
+cross_val_score(sgd_clf, ml.train_x, ml.train_y, cv = 10, scoring = "accuracy")
 breakpoint()
 
 
@@ -18,7 +40,7 @@ breakpoint()
 
 import numpy as np
 
-breakpoint()
+
 x = data.x
 y = data.y
 

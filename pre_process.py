@@ -53,7 +53,7 @@ class Fuse:
             v4 = o2[time_id, depth, lat_id, lon_id]
             v5 = po4[time_id, depth, lat_id, lon_id]
             v6 = si[time_id, depth, lat_id, lon_id]
-            self.x = np.array([v1, v2, v3, v4, v5, v6]).T
+            self.x = np.array([v1[:], v2[:], v3[:], v4[:], v5[:], v6[:]]).T
             self.y = np.array([krill_p]).T
         return
 
