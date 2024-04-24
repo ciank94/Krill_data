@@ -21,10 +21,44 @@ ml.split_train_test(0.2)
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import cross_val_predict
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import precision_recall_curve, precision_score, recall_score
+import matplotlib.pyplot as plt
 import numpy as np
-sgd_clf = SGDClassifier(random_state=37)
+sgd_clf = SGDClassifier(random_state=35)
 sgd_clf.fit(ml.train_x, ml.train_y)
+sgd_clf.decision_function([ml.train_x[0, :]])
+y_pred = cross_val_predict(sgd_clf, ml.train_x, ml.train_y, cv=10)
+con_mat = confusion_matrix(ml.train_y, y_pred)
+negative_act = con_mat[0,:]
+positive_act = con_mat[1,:]
+tn = negative_act[0]
+fp = negative_act[1]
+fn = positive_act[0]
+tp = positive_act[1]
+precision = tp/(tp + fp)
+recall_tpr = tp/(tp + fn)
+specificity_tnr = tn/(tn + fp)
+fpr = 1 - specificity_tnr
+
+print(precision, recall_tpr, specificity_tnr, fpr)  # 1 1 1 1
+y_scores = cross_val_predict(sgd_clf, ml.train_x, ml.train_y, cv=10, method="decision_function")
+precisions, recalls, thresholds = precision_recall_curve(ml.train_y, y_scores)
+plt.plot(thresholds, precisions[:-1], "b--", label="Precision")
+plt.plot(thresholds, recalls[:-1], "k-", label="Recall")
+plt.xlabel("Threshold")
+plt.legend(loc="center left")
+plt.ylim([0,1])
+plt.show()
+plt.figure()
+plt.plot(recalls, precisions)
+plt.show()
+print(y_scores)
+print(thresholds)
+breakpoint()
+ml.decision_function(sgd_clf)
+
 y_pred = sgd_clf.predict(ml.test_x)
 y_train_pred = sgd_clf.predict(ml.train_x)
 n_correct = sum(y_pred == ml.test_y)

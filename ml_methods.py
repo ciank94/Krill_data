@@ -36,5 +36,14 @@ class ML:
         self.test_y = np.ravel(self.y[test_indices].astype(int))
         return
 
+    def decision_function(self, classifier):
+        dec_v = np.zeros(np.shape(self.train_x)[0])
+        for i in range(0, np.shape(self.train_x)[0]):
+            dec_v[i] = classifier.decision_function([self.train_x[i, :]])
+        breakpoint()
+        return
+
+
+
 
 
