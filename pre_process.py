@@ -61,8 +61,9 @@ class Fuse:
         n_obs = np.shape(self.kb.density)[0]
         krill_p = np.zeros(n_obs)
         krill_p[:] = self.kb.density[:]
-        krill_p[krill_p > 0.1] = 1
-        krill_p[krill_p <= 0.1] = 0
+        thresh_v = 0.5
+        krill_p[krill_p > thresh_v] = 1
+        krill_p[krill_p <= thresh_v] = 0
         return krill_p.astype(int)
 
     def nearest_id(self):
