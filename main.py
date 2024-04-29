@@ -9,12 +9,7 @@ import sklearn
 kbase_path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/'
 cmems_path = kbase_path + 'CMEMS/'
 
-nc_file = nc.Dataset(cmems_path + 'gebco_2023.nc')
-elevation = np.array(nc_file.variables["elevation"]).astype(float)
-elevation[elevation>0] = np.nan
-elevation[elevation<-20000] = np.nan
-lat = nc_file.variables["lat"]
-breakpoint()
+
 
 # Specify cmems data id and range
 data_id = "cmems_mod_glo_bgc_my_0.25_P1M-m"  # monthly data
@@ -26,6 +21,9 @@ data = fuse_data(cmems_path, kbase_path, data_id, y1, y2)
 
 # adjust features
 ml = ML(data)
+ml.hist_data()
+breakpoint()
+
 ml.feature_scaling()
 
 # split training & test sets:
@@ -40,6 +38,14 @@ ml.get_classifier(classifier_name)
 ml.precision_metrics()
 ml.precision_recall_curve()
 ml.map_predictions(data)
+breakpoint()
+
+
+nc_file = nc.Dataset(cmems_path + 'gebco_2023.nc')
+elevation = np.array(nc_file.variables["elevation"]).astype(float)
+elevation[elevation>0] = np.nan
+elevation[elevation<-20000] = np.nan
+lat = nc_file.variables["lat"]
 breakpoint()
 
 

@@ -105,6 +105,16 @@ class ML:
             self.save_plot(save_name)
         return
 
+    def hist_data(self):
+        axis1_title = 'Frequency'
+        axis1_xtitle = 'Log$_{10}$ krill under 1m$^{2}$'
+        fig, ax1 = plt.subplots()
+        ax1.set_ylabel(axis1_title, color='k', fontsize=13)
+        ax1.set_xlabel(axis1_xtitle, color='k', fontsize=13)
+        hist1 = ax1.hist(self.y, bins=15, facecolor='#2ab0ff', edgecolor='#169acf', linewidth=0.5)
+        self.save_plot(save_name='hist_krillbase')
+        return
+
     def save_plot(self, save_name):
         savefile = self.results_folder + save_name + '.png'
         print('Saving file: ' + savefile)

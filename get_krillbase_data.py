@@ -13,14 +13,15 @@ class FilesKB:
 class DataKB:
 
     def __init__(self, files, year_start, year_end):
-        self.table = pd.read_table(files.kbase_data, sep=',')
-        density = np.array(self.table.iloc[0:-1, 12])
-        lat = np.array(self.table.iloc[0:-1, 2])
-        lon = np.array(self.table.iloc[0:-1, 3])
-        day_night = np.array(self.table.iloc[0:-1, 5])
+        self.table = pd.read_table(files.kbase_data, sep=',', encoding='unicode_escape')
+        density = np.array(self.table.iloc[0:-1, 25])
+        lat = np.array(self.table.iloc[0:-1, 4])
+        lon = np.array(self.table.iloc[0:-1, 5])
+        day_night = np.array(self.table.iloc[0:-1, 12])
+        bath = np.array(self.table.iloc[0:-1, 20])
 
         if not os.path.exists(files.dates):
-            self.date = self.table.iloc[0:-1, 4]
+            self.date = self.table.iloc[0:-1, 8]
             self.save_times(files)
             print('Saving times to npy file: ' + files.dates)
 
@@ -41,12 +42,13 @@ class DataKB:
         self.lat = lat[idx]
         self.lon = lon[idx]
         self.day_night = day_night[idx]
+        self.bath = bath[idx]
         return
 
     def save_times(self, files):
         date_mat = np.zeros([np.shape(self.date)[0], 3])
         for i in range(0, np.shape(self.date)[0]):
-            t_i = datetime.strptime(self.date[i], '%d-%b-%Y')
+            t_i = datetime.strptime(self.date[i], '%d/%m/%Y')
             date_mat[i, 0] = t_i.day
             date_mat[i, 1] = t_i.month
             date_mat[i, 2] = t_i.year

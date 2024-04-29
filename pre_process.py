@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 
@@ -61,10 +63,12 @@ class Fuse:
         n_obs = np.shape(self.kb.density)[0]
         krill_p = np.zeros(n_obs)
         krill_p[:] = self.kb.density[:]
-        thresh_v = 0.5
-        krill_p[krill_p > thresh_v] = 1
-        krill_p[krill_p <= thresh_v] = 0
-        return krill_p.astype(int)
+        krill_v = np.log10(krill_p)
+        # thresh_v = 0.5
+        # krill_p[krill_p > thresh_v] = 1
+        # krill_p[krill_p <= thresh_v] = 0
+        krill_v[krill_v < 0] = 0
+        return krill_v
 
     def nearest_id(self):
         n_obs = np.shape(self.kb.lat)[0]
@@ -75,6 +79,8 @@ class Fuse:
             dist_lon = (self.kb.lon[i] - self.cm.lon[:]) ** 2
             self.lat_id[i] = np.argmin(dist_lat)
             self.lon_id[i] = np.argmin(dist_lon)
+
+        return
 
 
 
