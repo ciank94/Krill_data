@@ -55,7 +55,8 @@ class Fuse:
             v4 = o2[time_id, depth, lat_id, lon_id]
             v5 = po4[time_id, depth, lat_id, lon_id]
             v6 = si[time_id, depth, lat_id, lon_id]
-            self.x = np.array([v1[:], v2[:], v3[:], v4[:], v5[:], v6[:]]).T
+            v7 = self.kb.bath
+            self.x = np.array([v1[:], v2[:], v3[:], v4[:], v5[:], v6[:], v7]).T
             self.y = np.array([krill_p]).T
         return
 
@@ -63,11 +64,11 @@ class Fuse:
         n_obs = np.shape(self.kb.density)[0]
         krill_p = np.zeros(n_obs)
         krill_p[:] = self.kb.density[:]
+        krill_p = krill_p + 0.01
         krill_v = np.log10(krill_p)
         # thresh_v = 0.5
         # krill_p[krill_p > thresh_v] = 1
         # krill_p[krill_p <= thresh_v] = 0
-        krill_v[krill_v < 0] = 0
         return krill_v
 
     def nearest_id(self):

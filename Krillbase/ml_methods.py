@@ -14,7 +14,7 @@ class ML:
         self.train_x = None
         self.classifier = None
         self.classifier_name = None
-        self.results_folder = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/results/'
+        self.results_folder = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/Krillbase/results/'
         self.x = data.x
         self.y = data.y
 

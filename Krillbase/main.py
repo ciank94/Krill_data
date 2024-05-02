@@ -6,10 +6,8 @@ import numpy as np
 import sklearn
 
 # paths
-kbase_path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/'
+kbase_path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/Krillbase/'
 cmems_path = kbase_path + 'CMEMS/'
-
-
 
 # Specify cmems data id and range
 data_id = "cmems_mod_glo_bgc_my_0.25_P1M-m"  # monthly data
@@ -21,7 +19,14 @@ data = fuse_data(cmems_path, kbase_path, data_id, y1, y2)
 
 # adjust features
 ml = ML(data)
+ml.feature_scaling()
+from sklearn.tree import DecisionTreeRegressor
+tree_reg = DecisionTreeRegressor(max_depth=100)
+tree_reg.fit(ml.x, np.ravel(ml.y))
+plt.scatter(tree_reg.predict(ml.x), np.ravel(ml.y))
+plt.show()
 ml.hist_data()
+
 breakpoint()
 
 ml.feature_scaling()
