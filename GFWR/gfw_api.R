@@ -8,7 +8,7 @@
 #Token is GFW_TOKEN = "Krill_SFI"
 # IMO: 9827891; Antarctic Endurance
 #install.packages("R.matlab")
-setwd("C:/Users/ciank/OneDrive - NTNU/PostDoc/e_gfwr")
+setwd("C:/Users/ciank/PycharmProjects/sinmod/Krill_data/GFWR/")
 library(gfwr)
 library(R.matlab)
 key <- gfw_auth()

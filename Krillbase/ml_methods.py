@@ -7,6 +7,8 @@ from sklearn.model_selection import cross_val_predict
 class ML:
 
     def __init__(self, data):
+        self.regressor = None
+        self.regressor_name = None
         self.fitmod = None
         self.test_y = None
         self.test_x = None
@@ -30,7 +32,47 @@ class ML:
             self.x[:, i] = temp_v
         return
 
-    def split_train_test(self, test_ratio):
+
+
+    def get_regressor(self, regressor_name):
+        rand_state = 37
+        max_tree = 6
+        self.regressor_name = regressor_name
+        if self.regressor_name == "SGD":
+            from sklearn.linear_model import SGDRegressor
+            self.regressor = SGDRegressor(random_state=rand_state)
+        elif self.regressor_name == "Decision_Tree":
+            from sklearn.tree import DecisionTreeRegressor
+            self.regressor = DecisionTreeRegressor(random_state=rand_state, max_depth=max_tree)
+        elif self.regressor_name == "LinReg":
+            from sklearn.linear_model import LinearRegression
+            self.regressor = LinearRegression()
+        elif self.regressor_name == "RandomForest":
+            from sklearn.ensemble import RandomForestRegressor
+            self.regressor = RandomForestRegressor()
+        else:
+            print("Not a valid regressor name")
+
+        self.regressor.fit(self.x, self.y)
+        return
+
+    def scores(self):
+        save_file = self.results_folder + self.regressor_name + '_scores.txt'
+        from sklearn.model_selection import cross_val_score
+        scores = cross_val_score(self.regressor, self.x, self.y, scoring="neg_mean_squared_error", cv=10)
+        tree_rmse_scores = np.sqrt(-scores)
+        decimal_p = 2
+        with open(save_file, "w") as text_file:
+            text_file.writelines('RMSE scores for ' + self.regressor_name + ': ')
+            text_file.writelines('\nMean score =  ' + str(np.round(np.mean(tree_rmse_scores), decimal_p)))
+            text_file.writelines('\nStandard deviation score =  ' + str(np.round(np.std(tree_rmse_scores), decimal_p)))
+            text_file.writelines('\nScores =  ' + str(np.round(tree_rmse_scores, decimal_p)))
+            # Close files
+        text_file.close()
+        return
+
+
+    def split_train_test_reg(self, test_ratio):
         # Method from  Hands-On Machine Learning with Scikit-Learn & TensorFlow by Aurelion Geron 2017
         np.random.seed(37)
         shuffled_indices = np.random.permutation(len(self.x))
@@ -38,9 +80,9 @@ class ML:
         test_indices = shuffled_indices[:test_set_size]
         train_indices = shuffled_indices[test_set_size:]
         self.train_x = self.x[train_indices,:]
-        self.train_y = np.ravel(self.y[train_indices].astype(int))
-        self.test_x = self.x[test_indices,:]
-        self.test_y = np.ravel(self.y[test_indices].astype(int))
+        self.train_y = self.y[train_indices]
+        self.test_x = self.x[test_indices, :]
+        self.test_y = self.y[test_indices]
         return
 
     def get_classifier(self, classifier_name):
@@ -55,6 +97,20 @@ class ML:
             self.classifier = DecisionTreeClassifier(random_state=rand_state, max_depth=max_tree)
         else:
             print("Not a valid classifier name")
+        return
+
+
+    def split_train_test(self, test_ratio):
+        # Method from  Hands-On Machine Learning with Scikit-Learn & TensorFlow by Aurelion Geron 2017
+        np.random.seed(37)
+        shuffled_indices = np.random.permutation(len(self.x))
+        test_set_size = int(len(self.x)*test_ratio)
+        test_indices = shuffled_indices[:test_set_size]
+        train_indices = shuffled_indices[test_set_size:]
+        self.train_x = self.x[train_indices,:]
+        self.train_y = np.ravel(self.y[train_indices].astype(int))
+        self.test_x = self.x[test_indices, :]
+        self.test_y = np.ravel(self.y[test_indices].astype(int))
         return
 
     def precision_metrics(self):

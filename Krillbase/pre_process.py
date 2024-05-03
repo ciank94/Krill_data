@@ -57,7 +57,7 @@ class Fuse:
             v6 = si[time_id, depth, lat_id, lon_id]
             v7 = self.kb.bath
             self.x = np.array([v1[:], v2[:], v3[:], v4[:], v5[:], v6[:], v7]).T
-            self.y = np.array([krill_p]).T
+            self.y = np.ravel(np.array([krill_p]).T)
         return
 
     def transform_krill_density(self):

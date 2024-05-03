@@ -20,12 +20,38 @@ data = fuse_data(cmems_path, kbase_path, data_id, y1, y2)
 # adjust features
 ml = ML(data)
 ml.feature_scaling()
-from sklearn.tree import DecisionTreeRegressor
-tree_reg = DecisionTreeRegressor(max_depth=100)
-tree_reg.fit(ml.x, np.ravel(ml.y))
-plt.scatter(tree_reg.predict(ml.x), np.ravel(ml.y))
+
+# Type of analysis
+regressor = "RandomForest"
+ml.get_regressor(regressor)
+ml.scores()
+
+
+
+breakpoint()
+
+ml.split_train_test_reg(test_ratio=0.2)
+
+
+
+
+
+#todo: plot out longitude, latitude, depth, chl and other predictor variables as histograms;
+#todo: correlation coefficient for predictor variables, best estimator_importances- RandomForestRegressor
+#todo: scatter matrix function: used to find correlations between attributes;
+#todo: fine tune hyperparameters
+
+# Split dataset for training and cross-validate
+
+
+
+tree_reg.fit(ml.x, ml.y)
+plt.scatter(tree_reg.predict(ml.x), ml.y)
 plt.show()
 ml.hist_data()
+
+regressor_name = "Decision_Tree"
+ml.get_classifier(classifier_name)
 
 breakpoint()
 
