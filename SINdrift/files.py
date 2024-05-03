@@ -10,4 +10,5 @@ class Files:
         f_ext = '.nc'
         self.f_name = self.path + f_name_start + var + f_ext
         self.nc_file = nc.Dataset(self.f_name)
+        #file_save = 'C:/Users/ciank/PycharmProjects/Krill_data/SINdrift/animation.mp4'
         return
