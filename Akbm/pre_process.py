@@ -1,6 +1,8 @@
 import os
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+from datetime import datetime, timedelta
 
 def combine_files(folder, summary_f):
     file_list = os.listdir(summary_f)
@@ -23,3 +25,27 @@ def combine_files(folder, summary_f):
 
     print('Saving: ' + folder + save_name)
     return
+
+def read_table(folder):
+    file = folder + 'summary_file.csv'
+    table = pd.read_csv(file, sep=',')
+    times = table.starttime
+    time_vals = np.zeros(np.shape(times)[0])
+    for i in range(0, np.shape(times)[0]):
+        if i == 0:
+            time_vals[i] = 0
+            t1 = datetime.strptime(times[i], "%Y-%m-%d %H:%M:%S")
+        else:
+            t2 = datetime.strptime(times[i], "%Y-%m-%d %H:%M:%S")
+            t_v = t2 - t1
+            time_vals[i] = t_v.seconds
+            t1 = t2
+
+    time_vals = time_vals / 60
+    time_vals[time_vals > 100] = np.nan
+    lats = table.lat
+    lons = table.lon
+    depth = table.krill_cog_depth
+    krill_nasc = table.krill_nasc
+
+    breakpoint()
