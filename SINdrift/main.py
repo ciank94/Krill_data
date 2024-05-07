@@ -1,4 +1,5 @@
 from files import Files
+from get_cmems_data import FilesCM, DataCM
 from datetime import datetime, timedelta
 import sys
 sys.path.insert(0, 'C:/Users/ciank/PycharmProjects/sinmod/opendrift') # add opendrift local path
@@ -6,16 +7,25 @@ from opendrift.models.oceandrift import OceanDrift
 from opendrift.readers import reader_netCDF_CF_generic as read_nc
 from opendrift.readers import reader_global_landmask
 
+y1 = "2000"
+y2 = "2001"
+cmems_path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
+data_id = "cmems_mod_glo_phy_my_0.083deg_P1D-m"
+f_cmems = FilesCM(cmems_path, data_id, y1, y2)
+phys_data = DataCM(f_cmems)
+# var = '01'
+# f = Files(var)
 
-var = '01'
-f = Files(var)
+
 o = OceanDrift()
-reader_samples = read_nc.Reader(f.f_name)
-o.add_readers_from_list(f.f_name)
+reader_samples = read_nc.Reader(f_cmems.cmems_data)
+o.add_readers_from_list(f_cmems.cmems_data)
+# reader_samples = read_nc.Reader(f.f_name)
+# o.add_readers_from_list(f.f_name)
 o.disable_vertical_motion()
-o.seed_elements(lon=-73, lat=-73, time=reader_samples.start_time, number=1000, radius=1000)
+o.seed_elements(lon=-73, lat=-73, time=reader_samples.start_time, number=1000, radius=1000000)
 
-o.run()
+o.run(duration=timedelta(hours=24*60))
 
 
 #o.animation(filename='animation.mp4')

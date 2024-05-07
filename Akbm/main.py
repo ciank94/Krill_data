@@ -9,8 +9,7 @@ summary_f = folder + 'summaryTablesExamples/'
 
 read_table(folder)
 
-#Comments- 10  min resolution- data from trajectory- krill distribution mostly near surface down to 200m,
+#Comments- 10  min resolution- data from trajectory- krill distribution mostly near surface down to 200m, mainly zeros,
+# with a power law distribution;
 
-#todo: make summaries for the combined file- how many times are there- the gaps, in time, averages, std etc;
-#Todo: then next we go into histograms of different variables- raw and log10 vals;;
 
