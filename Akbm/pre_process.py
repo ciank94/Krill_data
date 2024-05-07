@@ -48,4 +48,26 @@ def read_table(folder):
     depth = table.krill_cog_depth
     krill_nasc = table.krill_nasc
 
-    breakpoint()
+    fig, ax = plt.subplots()
+    plt.hist(lats)
+    save_plot('lats')
+
+    fig, ax = plt.subplots()
+    plt.hist(lons)
+    save_plot('lons')
+
+    fig, ax = plt.subplots()
+    plt.hist(depth)
+    save_plot('depth')
+
+    fig, ax = plt.subplots()
+    plt.hist(krill_nasc)
+    save_plot('krill_nasc')
+
+def save_plot(save_name):
+    savefile = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/Akbm/' + save_name + '.png'
+    plt.title(save_name)
+    print('Saving file: ' + savefile)
+    plt.savefig(savefile, dpi=400)
+    plt.close()
+    return

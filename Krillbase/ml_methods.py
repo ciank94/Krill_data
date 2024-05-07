@@ -16,6 +16,7 @@ class ML:
         self.train_x = None
         self.classifier = None
         self.classifier_name = None
+        self.f_names = data.f_names
         self.results_folder = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/Krillbase/results/'
         self.x = data.x
         self.y = data.y
@@ -52,11 +53,14 @@ class ML:
             self.regressor = RandomForestRegressor()
         else:
             print("Not a valid regressor name")
+        return
 
+    def fit_regressor(self):
         self.regressor.fit(self.x, self.y)
         return
 
     def scores(self):
+        self.fit_regressor()
         save_file = self.results_folder + self.regressor_name + '_scores.txt'
         from sklearn.model_selection import cross_val_score
         scores = cross_val_score(self.regressor, self.x, self.y, scoring="neg_mean_squared_error", cv=10)
@@ -70,6 +74,33 @@ class ML:
             # Close files
         text_file.close()
         return
+
+    def grid_search(self):
+        from sklearn.model_selection import GridSearchCV
+        param_grid = [{'n_estimators': [3, 10, 30], 'max_features':[2, 4, 6, 8]}]
+        grid_search = GridSearchCV(self.regressor, param_grid, cv=5, scoring='neg_mean_squared_error')
+        grid_search.fit(self.x, self.y)
+        best_params = grid_search.best_params_
+        best_estimator = grid_search.best_estimator_
+        cvres = grid_search.cv_results_
+        feature_importances = grid_search.best_estimator_.feature_importances_
+        f_names = self.f_names
+
+        save_file = self.results_folder + self.regressor_name + '_grid_search.txt'
+        with open(save_file, "w") as text_file:
+            text_file.writelines('RMSE grid scores for ' + self.regressor_name + ': ')
+            for mean_score, params in zip(cvres["mean_test_score"], cvres["params"]):
+                text_file.writelines('\n' + str(np.sqrt(-mean_score)) + ': ')
+                text_file.writelines(str(params))
+
+            text_file.writelines('\n' + 'Feature importance ' + self.regressor_name + ': ')
+            c = -1
+            for f in f_names:
+                c = c + 1
+                text_file.writelines('\n' + str(f) + ': ')
+                text_file.writelines(str(feature_importances[c]))
+        text_file.close()
+
 
 
     def split_train_test_reg(self, test_ratio):

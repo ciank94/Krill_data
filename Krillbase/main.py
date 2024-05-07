@@ -24,7 +24,8 @@ ml.feature_scaling()
 # Type of analysis
 regressor = "RandomForest"
 ml.get_regressor(regressor)
-ml.scores()
+ml.grid_search()
+#ml.scores()
 
 
 

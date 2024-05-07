@@ -6,6 +6,7 @@ import numpy as np
 class Fuse:
 
     def __init__(self, data_cm, data_kb):
+        self.f_names = None
         self.cm = data_cm
         self.kb = data_kb
         self.lat_id = None
@@ -56,6 +57,7 @@ class Fuse:
             v5 = po4[time_id, depth, lat_id, lon_id]
             v6 = si[time_id, depth, lat_id, lon_id]
             v7 = self.kb.bath
+            self.f_names = ["chl", "no3", "nppv", "o2", "po4", "si", "bath"]
             self.x = np.array([v1[:], v2[:], v3[:], v4[:], v5[:], v6[:], v7]).T
             self.y = np.ravel(np.array([krill_p]).T)
         return
