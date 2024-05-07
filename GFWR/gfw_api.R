@@ -12,20 +12,27 @@ setwd("C:/Users/ciank/PycharmProjects/sinmod/Krill_data/GFWR/")
 library(gfwr)
 library(R.matlab)
 key <- gfw_auth()
-t1 = get_vessel_info(query = "imo = '7390416'", 
-                search_type = "advanced", 
-                dataset = "all", 
-                key = key)
-t2 = get_vessel_info(query = "imo = '9827891'", 
-                    search_type = "advanced", 
-                    dataset = "all", 
-                    key = key)
-t3 = get_vessel_info(query = "imo = '9160358'", 
-                     search_type = "advanced", 
-                     dataset = "all", 
-                     key = key)
+fleetIDs <- get_vessel_info(query = "shipname LIKE '%Antarctic Endurance%' OR shipname LIKE '%Saga Sea%' OR shipname LIKE '%Antarctic Sea%'
 
-e1 = get_event(event_type = 'fishing', vessel = t1$id, start_date = "2010-01-01",
+OR imo = '8607115' OR imo = '85059770' OR imo = '8607385' OR imo = '8717453' OR imo = '8724315' OR imo = '9160358'
+
+OR mmsi = '412440689' OR imo = '8607373' OR imo = '9849332' OR imo = '7042538' OR imo = '8505977'",
+                            
+                            search_type = "advanced", dataset = "fishing_vessel", key = key)
+# t1 = get_vessel_info(query = "imo = '7390416'", 
+#                 search_type = "advanced", 
+#                 dataset = "all", 
+#                 key = key)
+# t2 = get_vessel_info(query = "imo = '9827891'", 
+#                     search_type = "advanced", 
+#                     dataset = "all", 
+#                     key = key)
+# t3 = get_vessel_info(query = "imo = '9160358'", 
+#                      search_type = "advanced", 
+#                      dataset = "all", 
+#                      key = key)
+
+e1 = get_event(event_type = 'fishing', vessel = fleetIDs$id[1], start_date = "2010-01-01",
                end_date = "2022-12-31", key = key)
 e12 = get_event(event_type = 'fishing', vessel = t2$id, start_date = "2010-01-01",
                end_date = "2022-12-31", key = key)
