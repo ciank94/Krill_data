@@ -31,20 +31,28 @@ OR mmsi = '412440689' OR imo = '8607373' OR imo = '9849332' OR imo = '7042538' O
 #                      search_type = "advanced", 
 #                      dataset = "all", 
 #                      key = key)
+ship_files = paste(fleetIDs$shipname, ".csv", sep="")
+for (i in 1:10) {
+  if (i == 3){
+    next
+  }
+print(ship_files[i])
+e1 = get_event(event_type = 'fishing', vessel = fleetIDs$id[i], start_date = "1990-01-01",
+               end_date = "2024-04-30", key = key)
 
-e1 = get_event(event_type = 'fishing', vessel = fleetIDs$id[1], start_date = "2010-01-01",
-               end_date = "2022-12-31", key = key)
-e12 = get_event(event_type = 'fishing', vessel = t2$id, start_date = "2010-01-01",
-               end_date = "2022-12-31", key = key)
-e2 = get_event(event_type = 'port_visit', vessel = t1$id, start_date = "2016-01-01",
-               end_date = "2016-12-31", key = key)
+df = data.frame(e1$lat,e1$lon,e1$start,e1$end)
+write.table(df,ship_files[i],row.names=FALSE,sep=",")
+#e2 = get_event(event_type = 'port_visit', vessel = fleetIDs$id, start_date = "2000-01-01",
+               #end_date = "2016-12-31", key = key)
 #e3 = get_event(event_type = 'encounter', vessel = t1$id, start_date = "2016-01-01",
-            #   end_date = "2016-12-31", key = key)
+#   end_date = "2016-12-31", key = key)
+
+}
+
 #ta = table(e1$start,e1$end,e1$lat,e1$lon)
 #write.csv(e1$start,e1$end,e1$lat,e1$lon,file = 'vess.csv')
 #writeMat("e1.mat",A = e1$start)
-df = data.frame(e1$lat,e1$lon,e1$start,e1$end)
-write.table(df,"esv.csv",row.names=FALSE,sep=",")
-df2 = data.frame(e12$lat,e12$lon,e12$start,e12$end)
-write.table(df2,"esv2.csv",row.names=FALSE,sep=",")
+
+#df2 = data.frame(e12$lat,e12$lon,e12$start,e12$end)
+#write.table(df2,"esv2.csv",row.names=FALSE,sep=",")
 
