@@ -11,6 +11,7 @@ cmems_path = kbase_path + 'CMEMS/'
 
 # Specify cmems data id and range
 data_id = "cmems_mod_glo_bgc_my_0.25_P1M-m"  # monthly data
+#data_id2 = "cmems_mod_glo_phy_anfc_0.083deg_P1M-m" #monthly data on sea ice etc.
 y1 = "1993"  # Start year
 y2 = "2016"  # End year
 
@@ -22,16 +23,18 @@ ml = ML(data)
 ml.feature_scaling()
 
 # Type of analysis
-regressor = "RandomForest"
+regressor = "Decision_Tree"
 ml.get_regressor(regressor)
-ml.grid_search()
-#ml.scores()
+#ml.grid_search()
+ml.scores()
 
 
 
-breakpoint()
+#breakpoint()
 
-ml.split_train_test_reg(test_ratio=0.2)
+#ml.split_train_test_reg(test_ratio=0.2)
+
+
 
 
 
@@ -46,45 +49,45 @@ ml.split_train_test_reg(test_ratio=0.2)
 
 
 
-tree_reg.fit(ml.x, ml.y)
-plt.scatter(tree_reg.predict(ml.x), ml.y)
-plt.show()
-ml.hist_data()
-
-regressor_name = "Decision_Tree"
-ml.get_classifier(classifier_name)
-
-breakpoint()
-
-ml.feature_scaling()
-
-# split training & test sets:
-ml.split_train_test(0.2)
-
-# define classifier
-#classifier_name = "SGDClassifier"
-classifier_name = "Decision_Tree"
-ml.get_classifier(classifier_name)
-
-# classifier metrics:
-ml.precision_metrics()
-ml.precision_recall_curve()
-ml.map_predictions(data)
-breakpoint()
-
-
-nc_file = nc.Dataset(cmems_path + 'gebco_2023.nc')
-elevation = np.array(nc_file.variables["elevation"]).astype(float)
-elevation[elevation>0] = np.nan
-elevation[elevation<-20000] = np.nan
-lat = nc_file.variables["lat"]
-breakpoint()
-
-
-
-
-
-ml.map_output()
+# tree_reg.fit(ml.x, ml.y)
+# plt.scatter(tree_reg.predict(ml.x), ml.y)
+# plt.show()
+# ml.hist_data()
+#
+# regressor_name = "Decision_Tree"
+# ml.get_classifier(classifier_name)
+#
+# breakpoint()
+#
+# ml.feature_scaling()
+#
+# # split training & test sets:
+# ml.split_train_test(0.2)
+#
+# # define classifier
+# #classifier_name = "SGDClassifier"
+# classifier_name = "Decision_Tree"
+# ml.get_classifier(classifier_name)
+#
+# # classifier metrics:
+# ml.precision_metrics()
+# ml.precision_recall_curve()
+# ml.map_predictions(data)
+# breakpoint()
+#
+#
+# nc_file = nc.Dataset(cmems_path + 'gebco_2023.nc')
+# elevation = np.array(nc_file.variables["elevation"]).astype(float)
+# elevation[elevation>0] = np.nan
+# elevation[elevation<-20000] = np.nan
+# lat = nc_file.variables["lat"]
+# breakpoint()
+#
+#
+#
+#
+#
+# ml.map_output()
 
 # lonW=-70
 # lonE=-20

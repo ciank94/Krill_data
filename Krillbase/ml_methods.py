@@ -2,11 +2,12 @@ import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_recall_curve
 from sklearn.model_selection import cross_val_predict
-
+from sklearn.metrics import mean_squared_error
 
 class ML:
 
     def __init__(self, data):
+        self.final_model = None
         self.regressor = None
         self.regressor_name = None
         self.fitmod = None
@@ -32,8 +33,6 @@ class ML:
             temp_v = (temp_v - np.mean(temp_v))/np.std(temp_v)
             self.x[:, i] = temp_v
         return
-
-
 
     def get_regressor(self, regressor_name):
         rand_state = 37
@@ -100,6 +99,9 @@ class ML:
                 text_file.writelines('\n' + str(f) + ': ')
                 text_file.writelines(str(feature_importances[c]))
         text_file.close()
+        
+        self.final_model = grid_search.best_estimator_
+        return
 
 
 
@@ -212,13 +214,15 @@ class ML:
     def map_predictions(self, data):
         time_id = 0
         depth = 0
+        self.fit_regressor()
+        breakpoint()
         lat = data.cm.lat
         lon = data.cm.lon
         chl = np.array(data.cm.chl[time_id, depth, :, :])
         no3 = np.array(data.cm.no3[time_id, depth, :, :])
-        nppv = np.array(data.cm.nppv[time_id, depth, :, :])
+        #nppv = np.array(data.cm.nppv[time_id, depth, :, :])
         o2 = np.array(data.cm.o2[time_id, depth, :, :])
-        po4 = np.array(data.cm.po4[time_id, depth, :, :])
+        #po4 = np.array(data.cm.po4[time_id, depth, :, :])
         si = np.array(data.cm.si[time_id, depth, :, :])
         shp_lat = np.shape(lat)[0]
         shp_lon = np.shape(lon)[0]
@@ -227,14 +231,15 @@ class ML:
             for j in range(0, shp_lon):
                 chl_v = chl[i, j]
                 no3_v = no3[i, j]
-                nppv_v = nppv[i, j]
+                #nppv_v = nppv[i, j]
                 o2_v = o2[i, j]
-                po4_v = po4[i, j]
+                #po4_v = po4[i, j]
                 si_v = si[i, j]
+
                 if chl_v > 1e06:
                     map_v[i, j] = np.nan
                 else:
-                    features_v = np.array([chl_v, no3_v, nppv_v, o2_v, po4_v, si_v]).T
+                    features_v = np.array([chl_v, no3_v, o2_v, si_v]).T
                     #prob_v = self.classifier.predict_proba([features_v])
                     prob_v = self.fitmod.predict([features_v])
                     #map_v[i, j] = prob_v[0, 1]

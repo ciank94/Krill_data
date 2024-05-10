@@ -52,13 +52,13 @@ class Fuse:
             lon_id = self.lon_id.astype(int)
             v1 = chl[time_id, depth, lat_id, lon_id]
             v2 = no3[time_id, depth, lat_id, lon_id]
-            v3 = nppv[time_id, depth, lat_id, lon_id]
+            #v3 = nppv[time_id, depth, lat_id, lon_id]
             v4 = o2[time_id, depth, lat_id, lon_id]
-            v5 = po4[time_id, depth, lat_id, lon_id]
+            #v5 = po4[time_id, depth, lat_id, lon_id]
             v6 = si[time_id, depth, lat_id, lon_id]
             v7 = self.kb.bath
-            self.f_names = ["chl", "no3", "nppv", "o2", "po4", "si", "bath"]
-            self.x = np.array([v1[:], v2[:], v3[:], v4[:], v5[:], v6[:], v7]).T
+            self.f_names = ["chl", "no3", "o2", "si", "bath"]
+            self.x = np.array([v1[:], v2[:], v4[:], v6[:], v7]).T
             self.y = np.ravel(np.array([krill_p]).T)
         return
 

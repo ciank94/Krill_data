@@ -2,12 +2,16 @@ import pandas as pd
 import numpy as np
 import os
 from datetime import datetime
-
+import geopandas as gpd
+import numpy as np
+from shapely.ops import nearest_points
+from shapely.geometry import Point
 
 class FilesKB:
     def __init__(self, kbase_path):
         self.kbase_data = kbase_path + 'krillbase.csv'
         self.dates = kbase_path + 'dates.npy'
+        self.coast = kbase_path + 'CMEMS/' + 'ant_coastline.shp'
 
 
 class DataKB:
@@ -42,6 +46,10 @@ class DataKB:
         self.lat = lat[idx]
         self.lon = lon[idx]
         self.day_night = day_night[idx]
+        id_day = self.day_night == 'day'
+        id_night = self.day_night == 'night'
+        self.day_night[id_day] = 1
+        self.day_night[id_night] = 0
         self.bath = bath[idx]
         return
 
@@ -54,6 +62,8 @@ class DataKB:
             date_mat[i, 2] = t_i.year
         np.save(files.dates, date_mat)
         return
+
+
 
 
 
