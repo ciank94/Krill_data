@@ -4,6 +4,7 @@ from sklearn.metrics import confusion_matrix, precision_recall_curve
 from sklearn.model_selection import cross_val_predict
 from sklearn.metrics import mean_squared_error
 
+
 class ML:
 
     def __init__(self, data):
