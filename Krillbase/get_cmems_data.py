@@ -19,6 +19,7 @@ class FilesCM:
         self.cmems_path = cmems_path
         self.start_date = y1 + "-01-01T00:00:00"
         self.end_date = y2 + "-12-31T23:59:59"
+        self.bath_file = self.cmems_path + 'CMEMS_BGC_bathy' + '.nc'
 
         if data_id == "cmems_mod_glo_bgc_my_0.25_P1M-m":
             self.var = ["chl", "no3", "nppv", "o2", "po4", "si"]
@@ -33,6 +34,12 @@ class FilesCM:
             self.download_set()
         else:
             print('Already downloaded dataset with name:  ' + self.cmems_data)
+
+        if not os.path.exists(self.bath_file):
+            print('Downloading file and naming: ' + self.bath_file)
+            self.download_bath()
+        else:
+            print('Already downloaded dataset with name:  ' + self.bath_file)
 
         return
 
@@ -55,6 +62,24 @@ class FilesCM:
         # catalogue = cop.describe(contains=["BGC_001_029"], include_datasets=True)
         # dataset = catalogue['products'][0]['datasets'][0]
         return
+
+    def download_bath(self):
+        static_id = "cmems_mod_glo_bgc_my_0.25_static"
+        var = ["deptho"]
+
+        cop.subset(dataset_id=static_id,
+                   #variables= var,
+                   #start_datetime=self.start_date,
+                   #end_datetime=self.end_date,
+                   minimum_longitude=self.min_lon,
+                   maximum_longitude=self.max_lon,
+                   minimum_latitude=self.min_lat,
+                   maximum_latitude=self.max_lat,
+                   #minimum_depth=self.min_depth,
+                   #maximum_depth=self.max_depth,
+                   output_filename=self.bath_file,
+                   output_directory=self.cmems_path
+                   )
 
 
 class DataCM:

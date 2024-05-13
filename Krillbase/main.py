@@ -27,7 +27,7 @@ regressor = "Decision_Tree"
 ml.get_regressor(regressor)
 #ml.grid_search()
 ml.scores()
-
+ml.map_predictions(data, cmems_path)
 
 
 #breakpoint()
@@ -43,7 +43,7 @@ ml.scores()
 #todo: plot out longitude, latitude, depth, chl and other predictor variables as histograms;
 #todo: correlation coefficient for predictor variables, best estimator_importances- RandomForestRegressor
 #todo: scatter matrix function: used to find correlations between attributes;
-#todo: fine tune hyperparameters
+#todo: plots to show: actual vs. predicted; predictor vs. response, map of data for SG (cartopy), and so on;
 
 # Split dataset for training and cross-validate
 

@@ -1,3 +1,4 @@
+import netCDF4
 import numpy as np
 from matplotlib import pyplot as plt
 from sklearn.metrics import confusion_matrix, precision_recall_curve
@@ -20,6 +21,7 @@ class ML:
         self.classifier_name = None
         self.f_names = data.f_names
         self.results_folder = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/Krillbase/results/'
+        self.cmems_folder = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/Krillbase/CMEMS/'
         self.x = data.x
         self.y = data.y
 
@@ -212,13 +214,34 @@ class ML:
         plt.close()
         return
 
-    def map_predictions(self, data):
+    def map_predictions(self, data, cmems_path):
         time_id = 0
         depth = 0
         self.fit_regressor()
-        breakpoint()
+
+        geb_file = self.cmems_folder + 'gebco_2023.nc'
+        nc_file = netCDF4.Dataset(geb_file)
+        lat1 = np.array(nc_file['lat'])
+        lon1 = np.array(nc_file['lon'])
+        elevation_v = np.array(nc_file['elevation'])
+        #cmems_bath = cmems_path + 'CMEMS_BGC_bathy.nc'
+        #nc_file = netCDF4.Dataset(cmems_bath)
+
+
         lat = data.cm.lat
         lon = data.cm.lon
+        e_v = np.zeros([np.shape(lat)[0], np.shape(lon)[0]])
+        for i in range(0, np.shape(lat)[0]):
+            for j in range(0, np.shape(lon)[0]):
+                lat_i = lat[i]
+                lon_j = lon[j]
+                coord_geb_lat_i = np.argmin(np.sqrt((lat_i - lat1) ** 2))
+                coord_geb_lon_i = np.argmin(np.sqrt((lon_j - lon1) ** 2))
+                e_v[i, j] = elevation_v[coord_geb_lat_i, coord_geb_lon_i]
+
+        e_v[e_v > 0] = np.nan
+        e_v = e_v * -1
+
         chl = np.array(data.cm.chl[time_id, depth, :, :])
         no3 = np.array(data.cm.no3[time_id, depth, :, :])
         #nppv = np.array(data.cm.nppv[time_id, depth, :, :])
@@ -227,24 +250,70 @@ class ML:
         si = np.array(data.cm.si[time_id, depth, :, :])
         shp_lat = np.shape(lat)[0]
         shp_lon = np.shape(lon)[0]
+
         map_v = np.zeros([shp_lat, shp_lon])
+        x = np.zeros([shp_lat*shp_lon, np.shape(self.x)[1]])
+        counter_val = -1
+        lat_store = np.zeros([shp_lat*shp_lon])
+        lon_store = np.zeros([shp_lat*shp_lon])
         for i in range(0, shp_lat):
             for j in range(0, shp_lon):
+                counter_val = counter_val + 1
                 chl_v = chl[i, j]
                 no3_v = no3[i, j]
                 #nppv_v = nppv[i, j]
                 o2_v = o2[i, j]
                 #po4_v = po4[i, j]
                 si_v = si[i, j]
+                e_vv = e_v[i, j]
 
-                if chl_v > 1e06:
-                    map_v[i, j] = np.nan
-                else:
-                    features_v = np.array([chl_v, no3_v, o2_v, si_v]).T
-                    #prob_v = self.classifier.predict_proba([features_v])
-                    prob_v = self.fitmod.predict([features_v])
-                    #map_v[i, j] = prob_v[0, 1]
-                    map_v[i, j] = prob_v[0]
+                x[counter_val, :] = [chl_v, no3_v, o2_v, si_v, e_vv]
+                lat_store[counter_val] = lat[i]
+                lon_store[counter_val] = lon[j]
+
+
+        temp_v = np.zeros(np.shape(x)[0])
+        for k in range(0, np.shape(x)[1]):
+            id_1 = (x[:, k] > 1e06) | (np.isnan(x[:, k]))
+            temp_v[id_1] = np.nanmedian(x[:, k])
+            temp_v[~id_1] = x[~id_1, k]
+            temp_v = (temp_v - np.mean(temp_v)) / np.std(temp_v)
+            x[:, k] = temp_v
+
+
+        breakpoint()
+        import cartopy.crs as ccrs
+        import cartopy.feature as cfeature
+        predictions_v = self.regressor.predict(x)
+        ax = plt.axes(projection=ccrs.PlateCarree())
+        coast = cfeature.GSHHSFeature(scale="f")
+        #ax.add_feature(coast)
+        ax.coastlines()
+        x2 = np.reshape(predictions_v, [shp_lat, shp_lon])
+        lats = np.array(lat)
+        lons = np.array(lon)
+        color_m = ax.contourf(lons, lats, x2, levels=np.linspace(-2, 1, 100))
+        plt.colorbar(color_m)
+        ax.gridlines(draw_labels=True, dms=True, x_inline=False, y_inline=False)
+        min_lon = -73
+        max_lon = -31
+        min_lat = -73
+        max_lat = -50
+        ax.set_extent([min_lon, max_lon, min_lat, max_lat])
+
+        ax.contourf(lats, lons,x2)
+
+
+
+
+        if chl_v > 1e06 | e_vv == np.nan:
+            map_v[i, j] = np.nan
+        else:
+            features_v = np.array().T
+            #prob_v = self.classifier.predict_proba([features_v])
+            prob_v = self.fitmod.predict([features_v])
+            #map_v[i, j] = prob_v[0, 1]
+            map_v[i, j] = prob_v[0]
         breakpoint()
         return
 
