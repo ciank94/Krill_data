@@ -284,11 +284,15 @@ class ML:
 
         import cartopy.crs as ccrs
         import cartopy.feature as cfeature
+        from cartopy.io import shapereader
         predictions_v = self.regressor.predict(x)
         ax = plt.axes(projection=ccrs.PlateCarree())
-        coast = cfeature.GSHHSFeature(scale="f")
+        #coast = cfeature.GSHHSFeature(scale="f")
+        #ax.add_feature(cfeature.GSHHSFeature('f'))
+        #cline = shapereader.Reader(self.cmems_folder + 'ant_coastline.shp')
+        #ax.add_geometries(cline.geometries(), ccrs.PlateCarree())
         #ax.add_feature(coast)
-        ax.coastlines()
+        ax.coastlines(resolution='10m')
         x2 = np.reshape(predictions_v, [shp_lat, shp_lon])
         lats = np.array(lat)
         lons = np.array(lon)
@@ -302,6 +306,7 @@ class ML:
         ax.set_extent([min_lon, max_lon, min_lat, max_lat])
         save_name = self.regressor_name + "_mapped_predictions"
         self.save_plot(save_name)
+
         breakpoint()
 
 
