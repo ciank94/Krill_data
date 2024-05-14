@@ -23,7 +23,7 @@ ml = ML(data)
 ml.feature_scaling()
 
 # Type of analysis
-regressor = "Decision_Tree"
+regressor = "RandomForest"
 ml.get_regressor(regressor)
 #ml.grid_search()
 ml.scores()

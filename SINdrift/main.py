@@ -9,7 +9,7 @@ from opendrift.readers import reader_global_landmask
 
 y1 = "2000"
 y2 = "2001"
-sim_v = "cmems"
+sim_v = ""
 
 o = OceanDrift()
 if sim_v == "cmems":

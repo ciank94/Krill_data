@@ -39,7 +39,7 @@ class ML:
 
     def get_regressor(self, regressor_name):
         rand_state = 37
-        max_tree = 6
+        max_tree = 8
         self.regressor_name = regressor_name
         if self.regressor_name == "SGD":
             from sklearn.linear_model import SGDRegressor
@@ -281,7 +281,7 @@ class ML:
             x[:, k] = temp_v
 
 
-        breakpoint()
+
         import cartopy.crs as ccrs
         import cartopy.feature as cfeature
         predictions_v = self.regressor.predict(x)
@@ -300,21 +300,12 @@ class ML:
         min_lat = -73
         max_lat = -50
         ax.set_extent([min_lon, max_lon, min_lat, max_lat])
-
-        ax.contourf(lats, lons,x2)
-
-
-
-
-        if chl_v > 1e06 | e_vv == np.nan:
-            map_v[i, j] = np.nan
-        else:
-            features_v = np.array().T
-            #prob_v = self.classifier.predict_proba([features_v])
-            prob_v = self.fitmod.predict([features_v])
-            #map_v[i, j] = prob_v[0, 1]
-            map_v[i, j] = prob_v[0]
+        save_name = self.regressor_name + "_mapped_predictions"
+        self.save_plot(save_name)
         breakpoint()
+
+
+
         return
 
 
