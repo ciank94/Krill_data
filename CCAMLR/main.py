@@ -1,13 +1,21 @@
 import numpy as np
-from explore import explore_data
+from reader import Read
 import pandas as pd
 import matplotlib.pyplot as plt
-folder = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/CCAMLR/'
-file = folder + 'catch.csv'
-table = pd.read_csv(file, sep=',')
-tableb = table[table.asd_code == '483']
+folder = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/CCAMLR/results/'
+file = folder + 'C1_680.csv'
+catch = Read(folder, file)
+
+#Subset data
+catch.subset("None")
+
+#summary plots
+catch.summary_plots()
 breakpoint()
-explore_data(table)
+
+
+#first thing to do is put important variables in a class structure;
+
 
 
 
