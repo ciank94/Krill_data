@@ -43,9 +43,9 @@ class Plot:
         self.save_plot(plt_name)
         return
 
+
     def save_plot(self, plt_name):
         savefile = self.save_folder + plt_name + '.png'
-        plt.title(plt_name)
         print('Saving file: ' + savefile)
         plt.savefig(savefile, dpi=400)
         plt.close()

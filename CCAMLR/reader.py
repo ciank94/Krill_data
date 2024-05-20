@@ -52,9 +52,9 @@ class Read:
 
     def get_var_subset(self, df):
         #Pull important variables:
-        self.h_lat = df.latitude_haul_start
-        self.h_lon = df.longitude_haul_start
-        self.h_time = df.datetime_haul_start
+        self.lat = df.latitude_haul_start
+        self.lon = df.longitude_haul_start
+        self.time = df.datetime_haul_start
         self.weight_kg = df.krill_greenweight_kg
         self.weight_log = np.log10(self.weight_kg)
         self.depth_bottom = df.depth_bottom_haul_start_m
