@@ -1,6 +1,7 @@
-from opdr_reader import opd_Read
+from opdr_reader import Read
 
 sindrift_path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/'
-opr = opd_Read(sindrift_path)
+op = Read(sindrift_path)
+op.plot_trajectory("SG")
 breakpoint()
 

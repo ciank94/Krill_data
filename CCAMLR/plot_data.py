@@ -76,7 +76,6 @@ class Plot:
     def init_plot(self):
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(projection=ccrs.PlateCarree())
-        #self.ax = plt.axes(projection=ccrs.PlateCarree())
         return
 
     def bin_data(self, dens, lat, lon):
@@ -100,9 +99,6 @@ class Plot:
 
 
     def plot_background(self):
-        #plt.axes()
-        #coast = cfeature.GSHHSFeature(scale=self.res) if needed;
-        #add features: land and coastlines
         land_10m = cfeature.NaturalEarthFeature('physical', 'land', '10m',
                                                 edgecolor='face',
                                                 facecolor='lightgrey')
@@ -119,10 +115,6 @@ class Plot:
         return
 
     def add_cbar(self):
-        # plt.grid(alpha=0.45)
-        #divider = make_axes_locatable(self.ax)
-        #ax_cb = divider.new_horizontal(size="3%", pad=0.05, axes_class=plt.Axes)
-        #self.fig.add_axes(ax_cb)
         cbar = plt.colorbar(self.plot1, extend = 'both')
         cbar.ax.set_ylabel(self.caxis_title, loc='center', size=9, weight='bold')
         cbar.ax.tick_params(labelsize=10, rotation=0)

@@ -27,14 +27,18 @@ else:
     reader_samples = reader_netCDF_CF_generic.Reader(f.f_name)
     o.add_readers_from_list(f.f_name)
 
-tr_file = cmems_path + 'trajectory.nc'
+tr_file = cmems_path + 'trajectory1.nc'
 o.disable_vertical_motion()
-o.seed_elements(lon=-37.5, lat=-55.5, time=reader_samples.start_time, number=1000, radius=3000)
-o.run(duration=timedelta(hours=24*50), outfile=tr_file)
+#o.seed_elements(lon=-37.5, lat=-55.5, time=reader_samples.start_time, number=1000, radius=10000)
+#o.seed_elements(lon=-38.2, lat=-53.7, time=reader_samples.end_time, number=10000, radius=10000)
+#o.seed_elements(lon=-37, lat=-53.1, time=reader_samples.end_time, number=1000, radius=10000)
+o.seed_elements(lon=-36, lat=-53.8, time=reader_samples.end_time, number=1000, radius=10000)
+
+#o.run(duration=timedelta(hours=24*50), outfile=tr_file)
+o.run(duration=timedelta(hours=24*60), time_step=-900, outfile=tr_file, export_variables=['lon', 'lat'])
 #o.plot()
 breakpoint()
-nc_file = nc.Dataset(tr_file)
-nc_file.variables['trajectory']
+
 
 
 # min_lon = -73
