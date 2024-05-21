@@ -1,7 +1,10 @@
+import os.path
+
 import matplotlib.pyplot as plt
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import numpy as np
+import netCDF4 as nc
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
@@ -13,11 +16,26 @@ class Plot:
         self.fig = None
         self.ax = None
         self.bin_res = 0.1 # degrees for pcolor bins
+        self.bath_res = 0.04 # bathymetry resolution
         self.c_avg_catch_all = 30
         self.init_region(region)
         self.name = region
         self.save_folder = folder
+        self.bath_file = self.save_folder + 'bath.npy'
+        self.bath_file_lon = self.save_folder + 'bath_lon.npy'
+        self.bath_file_lat = self.save_folder + 'bath_lat.npy'
+
+        if not os.path.exists(self.bath_file):
+            self.get_bathfile()
+            print('Creating ' + self.bath_file)
+
+        self.bath = np.load(self.bath_file)
+        self.bath_lon = np.load(self.bath_file_lon)
+        self.bath_lat = np.load(self.bath_file_lat)
+
+        self.bath_contours = np.linspace(0, 2000, 5)
         self.dens_cmap = plt.get_cmap('OrRd')
+        return
 
     def plot_points(self, lon, lat, c_v, vessel_names):
         ax = plt.axes(projection=ccrs.PlateCarree())
@@ -90,6 +108,8 @@ class Plot:
                                                 facecolor='lightgrey')
         self.ax.add_feature(land_10m)
         self.ax.coastlines(resolution='10m')
+        plt.contour(self.bath_lon, self.bath_lat, self.bath, self.bath_contours, colors='k', alpha=0.15,
+                    transform=ccrs.PlateCarree())
 
         # set extent and grid lines;
         gl = self.ax.gridlines(draw_labels=True, alpha=0.4)
@@ -120,43 +140,71 @@ class Plot:
 
 
     def init_region(self, region):
+
+
         if region == "SG":
-            self.min_lon = -40
-            self.max_lon = -34
+            self.min_lon = -40.5
+            self.max_lon = -33.8
             self.min_lat = -57.5
             self.max_lat = -51.5
-            self.res = "h"
-            self.s = 0.3
-            self.lat_range = np.arange(self.min_lat - 10, self.max_lat + 6, self.bin_res)
-            self.lon_range = np.arange(self.min_lon - 10, self.max_lon + 6, self.bin_res)
+
 
         if region == "AP":
-            self.min_lon = -65
-            self.max_lon = -52
+            self.min_lon = -65.3
+            self.max_lon = -51
             self.min_lat = -69
             self.max_lat = -56
-            self.res = "h"
-            self.s = 0.3
-            self.lat_range = np.arange(self.min_lat - 10, self.max_lat + 6, self.bin_res)
-            self.lon_range = np.arange(self.min_lon - 10, self.max_lon + 6, self.bin_res)
 
         if region == "SO":
             self.min_lon = -50
             self.max_lon = -41
             self.min_lat = -65
             self.max_lat = -57
-            self.res = "h"
-            self.s = 0.3
-            self.lat_range = np.arange(self.min_lat - 10, self.max_lat + 6, self.bin_res)
-            self.lon_range = np.arange(self.min_lon - 10, self.max_lon + 6, self.bin_res)
+
 
         if region == "full":
-            self.min_lon = -73
+            self.min_lon = -65
             self.max_lon = -31
-            self.min_lat = -90
+            self.min_lat = -70
             self.max_lat = -50
 
+
+        self.res = "h"
+        self.s = 0.3
+        self.lat_range = np.arange(self.min_lat - 10, self.max_lat + 6, self.bin_res)
+        self.lon_range = np.arange(self.min_lon - 10, self.max_lon + 6, self.bin_res)
+
         return
+
+    def get_bathfile(self):
+        bathfile_gebco = self.save_folder + 'gebco_2023.nc'
+        #
+        bath_f = nc.Dataset(bathfile_gebco)
+        e = np.array(bath_f['elevation'][:]).astype(float)
+        lat_e = np.array(bath_f['lat'][:])
+        lon_e = np.array(bath_f['lon'][:])
+
+        e[e > 0] = np.nan
+        e *= -1
+
+        new_lat = np.arange(np.min(lat_e), np.max(lat_e), self.bath_res)
+        new_lon = np.arange(np.min(lon_e), np.max(lon_e), self.bath_res)
+
+        shp_lat = np.shape(new_lat)[0]
+        shp_lon = np.shape(new_lon)[0]
+        e_new = np.zeros([shp_lat, shp_lon])
+        for i in range(0, shp_lat):
+            for j in range(0, shp_lon):
+                lat_id = np.argmin(np.sqrt((lat_e[:] - new_lat[i]) ** 2))
+                lon_id = np.argmin(np.sqrt((lon_e[:] - new_lon[j]) ** 2))
+                e_new[i, j] = e[lat_id, lon_id]
+
+        np.save(self.bath_file, e_new)
+        np.save(self.bath_file_lat, new_lat)
+        np.save(self.bath_file_lon, new_lon)
+        bath_f.close()
+        return
+
 
 
 

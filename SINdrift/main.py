@@ -1,4 +1,5 @@
-from files import Files
+import netCDF4 as nc
+from opdr_reader import sinRead
 from get_cmems_data import FilesCM, DataCM
 from datetime import datetime, timedelta
 import sys
@@ -9,11 +10,11 @@ from opendrift.readers import reader_global_landmask
 
 y1 = "2000"
 y2 = "2001"
-sim_v = ""
-
+cmems_path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
+sim_v = "cmems"
 o = OceanDrift()
+
 if sim_v == "cmems":
-    cmems_path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
     data_id = "cmems_mod_glo_phy_my_0.083deg_P1D-m"
     f_cmems = FilesCM(cmems_path, data_id, y1, y2)
     phys_data = DataCM(f_cmems)
@@ -22,16 +23,18 @@ if sim_v == "cmems":
     o.add_reader([reader_landmask, reader_samples])
 else:
     var = '01'
-    f = Files(var)
+    f = sinRead(var)
     reader_samples = reader_netCDF_CF_generic.Reader(f.f_name)
     o.add_readers_from_list(f.f_name)
 
-
+tr_file = cmems_path + 'trajectory.nc'
 o.disable_vertical_motion()
 o.seed_elements(lon=-37.5, lat=-55.5, time=reader_samples.start_time, number=1000, radius=3000)
-o.run(duration=timedelta(hours=24*50))
-o.plot()
+o.run(duration=timedelta(hours=24*50), outfile=tr_file)
+#o.plot()
 breakpoint()
+nc_file = nc.Dataset(tr_file)
+nc_file.variables['trajectory']
 
 
 # min_lon = -73

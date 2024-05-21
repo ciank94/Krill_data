@@ -112,8 +112,6 @@ class Read:
         ax.hist(self.gear_depth)
         ax.set_xlabel('gear_depth')
         self.save_plot('Gear_depth')
-
-        breakpoint()
         return
 
 

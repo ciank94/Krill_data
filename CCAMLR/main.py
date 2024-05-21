@@ -13,7 +13,16 @@ df.subset("None")
 #summary plots
 #catch.summary_plots()
 
-plot = Plot(folder, "SO")
+# plot = Plot(folder, "full")
+# plot.contour_map(df)
+#
+# plot = Plot(folder, "AP")
+# plot.contour_map(df)
+#
+# plot = Plot(folder, "SO")
+# plot.contour_map(df)
+
+plot = Plot(folder, "AP")
 plot.contour_map(df)
 breakpoint()
 
