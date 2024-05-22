@@ -29,7 +29,7 @@ class Read:
         #self.z = self.nc_file['z']
 
         # plotting parameters
-        self.bath_contours = np.linspace(0, 2000, 5)
+        self.bath_contours = np.linspace(0, 3000, 10)
         self.bath_cmap = plt.get_cmap('Blues')
         self.depth_colors = np.arange(0, 4500, 200)
         return
@@ -63,8 +63,8 @@ class Read:
                                                 edgecolor='face',
                                                 facecolor='lightgrey')
         self.ax.add_feature(land_10m)
-        self.ax.coastlines(resolution='10m')
-        plt.contour(self.bath_lon, self.bath_lat, self.bath, self.bath_contours, colors='k', alpha=0.15,
+        self.ax.coastlines(resolution='10m', linewidth=0.7)
+        plt.contour(self.bath_lon, self.bath_lat, self.bath, self.bath_contours, colors='k', alpha=0.2, linewidths=0.7,
                     transform=ccrs.PlateCarree())
 
         # set extent and grid lines;

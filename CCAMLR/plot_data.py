@@ -33,7 +33,7 @@ class Plot:
         self.bath_lon = np.load(self.bath_file_lon)
         self.bath_lat = np.load(self.bath_file_lat)
 
-        self.bath_contours = np.linspace(0, 2000, 5)
+        self.bath_contours = np.linspace(0, 3000, 10)
         self.dens_cmap = plt.get_cmap('OrRd')
         return
 
@@ -87,10 +87,11 @@ class Plot:
         n_catches = np.zeros([shp_lon_range, shp_lat_range])
         dens_f = np.zeros([shp_lon_range, shp_lat_range])
 
-        for i in range(0, shp_lat):
-            lat_id = np.argmin(np.sqrt((lat[i] - self.lat_range[:]) ** 2))
-            lon_id = np.argmin(np.sqrt((lon[i] - self.lon_range[:]) ** 2))
-            dens_m[lon_id, lat_id] = dens_m[lon_id, lat_id] + dens[i]
+
+        for ij in range(0, shp_lat):
+            lat_id = np.argmin(np.sqrt((lat.iloc[ij] - self.lat_range[:]) ** 2))
+            lon_id = np.argmin(np.sqrt((lon.iloc[ij] - self.lon_range[:]) ** 2))
+            dens_m[lon_id, lat_id] = dens_m[lon_id, lat_id] + dens.iloc[ij]
             n_catches[lon_id, lat_id] = n_catches[lon_id, lat_id] + 1
 
         dens_f[dens_m>0] = dens_m[dens_m>0]/n_catches[dens_m>0]
@@ -101,10 +102,12 @@ class Plot:
     def plot_background(self):
         land_10m = cfeature.NaturalEarthFeature('physical', 'land', '10m',
                                                 edgecolor='face',
-                                                facecolor='lightgrey')
+                                                facecolor='lightgray')
+
         self.ax.add_feature(land_10m)
-        self.ax.coastlines(resolution='10m')
-        plt.contour(self.bath_lon, self.bath_lat, self.bath, self.bath_contours, colors='k', alpha=0.15,
+        self.ax.coastlines(resolution='10m', linewidth=0.7)
+
+        plt.contour(self.bath_lon, self.bath_lat, self.bath, self.bath_contours, colors='k', alpha=0.15, linewidths=0.5,
                     transform=ccrs.PlateCarree())
 
         # set extent and grid lines;
@@ -154,7 +157,7 @@ class Plot:
             self.max_lat = -57
 
 
-        if region == "full":
+        if region == "ALL":
             self.min_lon = -65
             self.max_lon = -31
             self.min_lat = -70
