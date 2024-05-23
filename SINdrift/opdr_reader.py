@@ -1,20 +1,20 @@
 import os.path
 import matplotlib.pyplot as plt
+import matplotlib.collections as mcol
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 import numpy as np
 import netCDF4 as nc
 
 
-
-
 class Read:
 
-    def __init__(self, sindrift_path):
+    def __init__(self, sindrift_path, key):
         # Organise file data
         self.filepath = sindrift_path + 'CMEMS/'
         self.results = sindrift_path + 'results/'
-        self.tr_file = self.filepath + 'trajectory1.nc'
+        self.key = key
+        self.tr_file = self.filepath + self.key + '_case_trajectory.nc'
         self.nc_file = nc.Dataset(self.tr_file)
         self.bath_file = self.results + 'bath.npy'
         self.bath_file_lon = self.results + 'bath_lon.npy'
@@ -48,11 +48,15 @@ class Read:
 
         lon_1 = self.lon[0:-1:step_v, :]
         lat_1 = self.lat[0:-1:step_v, :]
+        c_vals = np.arange(0,np.shape(lat_1)[1])
+        c_vals = c_vals*np.ones([np.shape(lat_1)[0], np.shape(lat_1)[1]])
         #
-        plt.scatter(lon_1, lat_1, s=1, facecolor='gray', edgecolors='gray', alpha=0.5, linewidth=0.5)
-        plt.scatter(lon_1[:, 0], lat_1[:, 0], s=20, facecolor='red', edgecolors='k', alpha=0.8, linewidth=0.5)
 
-        plt_name = region + "_worms"
+        plt.scatter(lon_1, lat_1, s=0.2, c=c_vals, cmap='YlOrRd', alpha=1, linewidth=1, linestyle='--')
+        plt.scatter(lon_1[:, 0], lat_1[:, 0], s=18, facecolor='yellow', edgecolors='k', alpha=0.9, linewidth=0.6)
+        plt.scatter(lon_1[:, -1], lat_1[:, -1], s=18, facecolor='red', edgecolors='k', alpha=0.9, linewidth=0.6)
+
+        plt_name = self.key + "_worms"
         self.save_plot(plt_name)
         return
 

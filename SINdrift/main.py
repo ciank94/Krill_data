@@ -1,78 +1,50 @@
 import netCDF4 as nc
-from opdr_reader import sinRead
-from get_cmems_data import FilesCM, DataCM
-from datetime import datetime, timedelta
+from configure import read_nc_input, Case
 import sys
 sys.path.insert(0, 'C:/Users/ciank/PycharmProjects/sinmod/opendrift') # add opendrift local path
 from opendrift.models.oceandrift import OceanDrift
-from opendrift.readers import reader_netCDF_CF_generic
-from opendrift.readers import reader_global_landmask
+from opendrift.readers import reader_netCDF_CF_generic, reader_global_landmask
 
+# CMEMS folders
 y1 = "2000"
 y2 = "2001"
-cmems_path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
+path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
 sim_v = "cmems"
-o = OceanDrift()
-
-if sim_v == "cmems":
-    data_id = "cmems_mod_glo_phy_my_0.083deg_P1D-m"
-    f_cmems = FilesCM(cmems_path, data_id, y1, y2)
-    phys_data = DataCM(f_cmems)
-    reader_samples = reader_netCDF_CF_generic.Reader(f_cmems.cmems_data)
-    reader_landmask = reader_global_landmask.Reader()
-    o.add_reader([reader_landmask, reader_samples])
-else:
-    var = '01'
-    f = sinRead(var)
-    reader_samples = reader_netCDF_CF_generic.Reader(f.f_name)
-    o.add_readers_from_list(f.f_name)
-
-tr_file = cmems_path + 'trajectory1.nc'
-o.disable_vertical_motion()
-#o.seed_elements(lon=-37.5, lat=-55.5, time=reader_samples.start_time, number=1000, radius=10000)
-#o.seed_elements(lon=-38.2, lat=-53.7, time=reader_samples.end_time, number=10000, radius=10000)
-#o.seed_elements(lon=-37, lat=-53.1, time=reader_samples.end_time, number=1000, radius=10000)
-o.seed_elements(lon=-36, lat=-53.8, time=reader_samples.end_time, number=1000, radius=10000)
-
-#o.run(duration=timedelta(hours=24*50), outfile=tr_file)
-o.run(duration=timedelta(hours=24*60), time_step=-900, outfile=tr_file, export_variables=['lon', 'lat'])
-#o.plot()
-breakpoint()
 
 
 
-# min_lon = -73
-# max_lon = -31
-# min_lat = -73
-# max_lat = -50
-# reader_landmask = reader_global_landmask.Reader()  # lonmin, latmin, lonmax, latmax
+# Class for configuring simulation scenario and storing output file;
+time_step_hours = -6  # negative time is backwards stepping of model
+duration_days = 120  # look into (time=start_time + i*time_step) for setting the start and end time of simulations;
+
+key_list = ["SG_NW", "SG_NE"]
+for key in key_list:
+    # Create simulation instance:
+    o = OceanDrift(loglevel=20)  # log_level= 0 for full diagnostics, 50 for none
+
+    # Adding reader objects to provide forcing variables
+    phys_states = read_nc_input(sim_v, path, y1, y2)
+    reader_samples = reader_netCDF_CF_generic.Reader(phys_states)  # read forcing variables
+    reader_landmask = reader_global_landmask.Reader()  # high resolution coast for particle beaching etc.
+    o.add_reader([reader_landmask, reader_samples])  # add readers to model instance
+
+    # for case:
+    case = Case(reader_samples, path, time_step_hours, duration_days)
+    case.get_scenarios(key=key)
+
+    # Simulation seeding
+    o.disable_vertical_motion()
+    o.seed_elements(lon=case.lon_init,
+                    lat=case.lat_init,
+                    time=case.t_init,
+                    number=case.n_part,
+                    radius=case.radius)
+
+    # Simulation running
+    o.run(duration=case.duration,
+          time_step=case.time_step,
+          outfile=case.trajectory_file,
+          export_variables=case.export_variables)
 
 
 
-
-#Import model for passive tracers
-
-#
-
-
-#o.add_reader([reader_landmask, reader_samples])
-
-
-
-o.seed_elements(lon=min_lon, lat=min_lat, number=100, radius=1000,
-                time=reader_samples.start_time)
-o.run()
-breakpoint()
-
-
-
-o.add_readers_from_list(
-    [f.f_name])
-
-o.disable_vertical_motion()
-o.seed_elements(lon=4.85, lat=60, time=datetime.now(), number=10000, radius=1000)
-o.run(duration=timedelta(hours=1))
-o.animation()
-breakpoint()
-
-print(f.path)

@@ -22,7 +22,7 @@ class FilesCM:
 
         if data_id == "cmems_mod_glo_phy_my_0.083deg_P1D-m":
             self.var = ["uo", "vo"]
-            self.cmems_data = (self.cmems_path + 'CMEMS_BGC_hindcast_' + self.start_date[:4] +
+            self.cmems_data = (self.cmems_path + 'CMEMS_GLO_PHYS_hindcast_' + self.start_date[:4] +
                                '_' + self.end_date[:4] + '.nc')
         else:
             print('Invalid cmems data id')
