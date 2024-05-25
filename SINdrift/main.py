@@ -1,19 +1,25 @@
 import netCDF4 as nc
 from configure import read_nc_input, Case
 import sys
-sys.path.insert(0, 'C:/Users/ciank/PycharmProjects/sinmod/opendrift') # add opendrift local path
+saga = 0
+if saga == 1:
+    sys.path.insert(0, '/cluster/projects/nn9828k/Cian_sinmod/python/opendrift')
+    path = '/nird/projects/NS9828K/cmems_opendrift/'
+else:
+    sys.path.insert(0, 'C:/Users/ciank/PycharmProjects/sinmod/opendrift') # add opendrift local path
+    #path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
+    path = 'E:/cmems_opendrift/'
 from opendrift.models.oceandrift import OceanDrift
 from opendrift.readers import reader_netCDF_CF_generic, reader_global_landmask
 
 # CMEMS folders
 y1 = "2000"
 y2 = "2001"
-path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
 data_id = "cmems_mod_glo_phy_my_0.083deg_P1D-m"
 sim_v = "cmems"
 
 # Simulation settings
-time_step_hours = -6  # negative time is backwards stepping of model
+time_step_hours = 6  # negative time is backwards stepping of model
 duration_days = 120  # look into (time=start_time + i*time_step) for setting the start and end time of simulations;
 
 #key_list = ["SG_NW", "SG_NE"]

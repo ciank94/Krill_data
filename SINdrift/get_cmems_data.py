@@ -9,12 +9,12 @@ from pprint import pprint
 class FilesCM:
 
     def __init__(self, cmems_path, data_id, y1, y2):
-        self.case = "SG_S_"
+        self.case = "norm_"
         self.month_end = None
         self.month_start = None
         self.config_duration()  # Uses case to specify start and end dataes extracted from cmems
         self.min_depth = 0
-        self.max_depth = 1
+        self.max_depth = 200
         self.min_lon = -80
         self.max_lon = -31
         self.min_lat = -73
