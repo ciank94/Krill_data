@@ -3,10 +3,10 @@ from get_cmems_data import FilesCM, DataCM
 from datetime import datetime, timedelta
 
 
-def read_nc_input(sim_v, path, y1, y2, data_id):
+def read_nc_input(sim_v, path, y1, y2, data_id, download):
     if sim_v == "cmems":
         data_id = data_id
-        f = FilesCM(path, data_id, y1, y2)  #phys_data = DataCM(f_cmems)
+        f = FilesCM(path, data_id, y1, y2, download)  #phys_data = DataCM(f_cmems)
         phys_states = f.cmems_data
     else:
         var = '01'

@@ -8,14 +8,14 @@ from pprint import pprint
 
 class FilesCM:
 
-    def __init__(self, cmems_path, data_id, y1, y2):
+    def __init__(self, cmems_path, data_id, y1, y2, download):
         self.case = "norm_"
         self.month_end = None
         self.month_start = None
         self.config_duration()  # Uses case to specify start and end dataes extracted from cmems
-        self.min_depth = 0
-        self.max_depth = 200
-        self.min_lon = -80
+        self.min_depth = 40
+        self.max_depth = 80
+        self.min_lon = -70
         self.max_lon = -31
         self.min_lat = -73
         self.max_lat = -50
@@ -37,6 +37,7 @@ class FilesCM:
             sys.exit()
 
         if not os.path.exists(self.cmems_data):
+        #if download == 1:
             print('Downloading file and naming: ' + self.cmems_data)
             self.download_set()
         else:

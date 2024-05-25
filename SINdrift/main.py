@@ -1,22 +1,18 @@
 import netCDF4 as nc
 from configure import read_nc_input, Case
 import sys
-saga = 0
-if saga == 1:
-    sys.path.insert(0, '/cluster/projects/nn9828k/Cian_sinmod/python/opendrift')
-    path = '/nird/projects/NS9828K/cmems_opendrift/'
-else:
-    sys.path.insert(0, 'C:/Users/ciank/PycharmProjects/sinmod/opendrift') # add opendrift local path
-    #path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
-    path = 'E:/cmems_opendrift/'
+sys.path.insert(0, 'C:/Users/ciank/PycharmProjects/sinmod/opendrift') # add opendrift local path
+path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
+#path = 'E:/cmems_opendrift/'
 from opendrift.models.oceandrift import OceanDrift
 from opendrift.readers import reader_netCDF_CF_generic, reader_global_landmask
 
 # CMEMS folders
 y1 = "2000"
-y2 = "2001"
+y2 = "2000"
 data_id = "cmems_mod_glo_phy_my_0.083deg_P1D-m"
 sim_v = "cmems"
+download = 1
 
 # Simulation settings
 time_step_hours = 6  # negative time is backwards stepping of model
@@ -29,7 +25,7 @@ for key in key_list:
     o = OceanDrift(loglevel=20)  # log_level= 0 for full diagnostics, 50 for none
 
     # Adding reader objects to provide forcing variables
-    phys_states = read_nc_input(sim_v, path, y1, y2, data_id)
+    phys_states = read_nc_input(sim_v, path, y1, y2, data_id, download)
     reader_samples = reader_netCDF_CF_generic.Reader(phys_states)  # read forcing variables
     reader_landmask = reader_global_landmask.Reader()  # high resolution coast for particle beaching etc.
     o.add_reader([reader_landmask, reader_samples])  # add readers to model instance
