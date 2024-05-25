@@ -3,9 +3,9 @@ from get_cmems_data import FilesCM, DataCM
 from datetime import datetime, timedelta
 
 
-def read_nc_input(sim_v, path, y1, y2):
+def read_nc_input(sim_v, path, y1, y2, data_id):
     if sim_v == "cmems":
-        data_id = "cmems_mod_glo_phy_my_0.083deg_P1D-m"
+        data_id = data_id
         f = FilesCM(path, data_id, y1, y2)  #phys_data = DataCM(f_cmems)
         phys_states = f.cmems_data
     else:

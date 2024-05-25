@@ -45,14 +45,15 @@ class Read:
         self.add_cbar()
 
         step_v = np.floor(np.shape(self.lon)[0]/1000).astype(int)
+        step_v2 = np.floor(np.shape(self.lon)[1]/(np.shape(self.lon)[1]*0.99)).astype(int)
 
-        lon_1 = self.lon[0:-1:step_v, :]
-        lat_1 = self.lat[0:-1:step_v, :]
+        lon_1 = self.lon[0:-1:step_v, 0:-1:step_v2]
+        lat_1 = self.lat[0:-1:step_v, 0:-1:step_v2]
         c_vals = np.arange(0,np.shape(lat_1)[1])
         c_vals = c_vals*np.ones([np.shape(lat_1)[0], np.shape(lat_1)[1]])
         #
 
-        plt.scatter(lon_1, lat_1, s=0.2, c=c_vals, cmap='YlOrRd', alpha=1, linewidth=1, linestyle='--')
+        plt.scatter(lon_1, lat_1, c=c_vals,s=1.3, cmap='YlOrRd', alpha=1, linewidth=1.3, linestyle='-', marker='_')
         plt.scatter(lon_1[:, 0], lat_1[:, 0], s=18, facecolor='yellow', edgecolors='k', alpha=0.9, linewidth=0.6)
         plt.scatter(lon_1[:, -1], lat_1[:, -1], s=18, facecolor='red', edgecolors='k', alpha=0.9, linewidth=0.6)
 

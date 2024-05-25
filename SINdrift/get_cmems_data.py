@@ -9,20 +9,28 @@ from pprint import pprint
 class FilesCM:
 
     def __init__(self, cmems_path, data_id, y1, y2):
+        self.case = "SG_S_"
+        self.month_end = None
+        self.month_start = None
+        self.config_duration()  # Uses case to specify start and end dataes extracted from cmems
         self.min_depth = 0
         self.max_depth = 1
-        self.min_lon = -73
+        self.min_lon = -80
         self.max_lon = -31
         self.min_lat = -73
         self.max_lat = -50
         self.data_id = data_id
         self.cmems_path = cmems_path
-        self.start_date = y1 + "-01-01T00:00:00"
-        self.end_date = y2 + "-12-31T23:59:59"
+        self.start_date = y1 + self.month_start
+        self.end_date = y2 + self.month_end
 
         if data_id == "cmems_mod_glo_phy_my_0.083deg_P1D-m":
             self.var = ["uo", "vo"]
-            self.cmems_data = (self.cmems_path + 'CMEMS_GLO_PHYS_hindcast_' + self.start_date[:4] +
+            self.cmems_data = (self.cmems_path + 'CMEMS_GLPHYS_D_' + self.case + self.start_date[:4] +
+                               '_' + self.end_date[:4] + '.nc')
+        elif data_id == "cmems_mod_glo_phy-cur_anfc_0.083deg_P1M-m":
+            self.var = ["uo", "vo"]
+            self.cmems_data = (self.cmems_path + 'CMEMS_GLO_PHYS_hindcast_monthly_' + self.start_date[:4] +
                                '_' + self.end_date[:4] + '.nc')
         else:
             print('Invalid cmems data id')
@@ -55,6 +63,21 @@ class FilesCM:
         # catalogue = cop.describe(contains=["BGC_001_029"], include_datasets=True)
         # dataset = catalogue['products'][0]['datasets'][0]
         return
+
+    def config_duration(self):
+        if self.case == "SG_S_":
+            print("DOWNLOADING: Case SG_short")
+            month_start = "-05-01"
+            month_end = "-09-30"
+        else:
+            print("DOWNLOADING standard file")
+            month_start = "-01-01"
+            month_end = "-12-31"
+
+        self.month_start = month_start + "T00:00:00"
+        self.month_end = month_end + "T23:59:59"
+        return
+
 
 
 class DataCM:

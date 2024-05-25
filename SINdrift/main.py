@@ -9,26 +9,26 @@ from opendrift.readers import reader_netCDF_CF_generic, reader_global_landmask
 y1 = "2000"
 y2 = "2001"
 path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
+data_id = "cmems_mod_glo_phy_my_0.083deg_P1D-m"
 sim_v = "cmems"
 
-
-
-# Class for configuring simulation scenario and storing output file;
+# Simulation settings
 time_step_hours = -6  # negative time is backwards stepping of model
 duration_days = 120  # look into (time=start_time + i*time_step) for setting the start and end time of simulations;
 
-key_list = ["SG_NW", "SG_NE"]
+#key_list = ["SG_NW", "SG_NE"]
+key_list = ["SG_NW"]
 for key in key_list:
     # Create simulation instance:
     o = OceanDrift(loglevel=20)  # log_level= 0 for full diagnostics, 50 for none
 
     # Adding reader objects to provide forcing variables
-    phys_states = read_nc_input(sim_v, path, y1, y2)
+    phys_states = read_nc_input(sim_v, path, y1, y2, data_id)
     reader_samples = reader_netCDF_CF_generic.Reader(phys_states)  # read forcing variables
     reader_landmask = reader_global_landmask.Reader()  # high resolution coast for particle beaching etc.
     o.add_reader([reader_landmask, reader_samples])  # add readers to model instance
 
-    # for case:
+    # Class for configuring simulation scenario and storing output file;
     case = Case(reader_samples, path, time_step_hours, duration_days)
     case.get_scenarios(key=key)
 
