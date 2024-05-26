@@ -2,7 +2,7 @@ import netCDF4 as nc
 from configure import read_nc_input, Case
 import sys
 sys.path.insert(0, 'C:/Users/ciank/PycharmProjects/sinmod/opendrift') # add opendrift local path
-path = 'C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/'
+path = "C:/Users/ciank/PycharmProjects/sinmod/Krill_data/SINdrift/CMEMS/"
 #path = 'E:/cmems_opendrift/'
 from opendrift.models.oceandrift import OceanDrift
 from opendrift.readers import reader_netCDF_CF_generic, reader_global_landmask
@@ -16,10 +16,10 @@ download = 1
 
 # Simulation settings
 time_step_hours = 6  # negative time is backwards stepping of model
-duration_days = 120  # look into (time=start_time + i*time_step) for setting the start and end time of simulations;
+duration_days = 190  # look into (time=start_time + i*time_step) for setting the start and end time of simulations;
 
 #key_list = ["SG_NW", "SG_NE"]
-key_list = ["SG_NW"]
+key_list = ["APSO"]
 for key in key_list:
     # Create simulation instance:
     o = OceanDrift(loglevel=20)  # log_level= 0 for full diagnostics, 50 for none

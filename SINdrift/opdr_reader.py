@@ -133,6 +133,12 @@ class Read:
             self.min_lat = -70
             self.max_lat = -50
 
+        if region == "APSO":
+            self.min_lon = -75
+            self.max_lon = -30
+            self.min_lat = -70
+            self.max_lat = -50
+
         return
 
 class sinRead:
